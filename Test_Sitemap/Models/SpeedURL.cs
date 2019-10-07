@@ -1,30 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 
 namespace Test_Sitemap.Models
 {
-    public sealed class SpeedURL
+    internal sealed class SpeedURL
     {
+        private static WebClient _wc;
+        private static Stopwatch _watch;
+
+        internal SpeedURL()
+        {
+            _wc = new WebClient();
+            _watch = new Stopwatch();
+        }
+
         /// <summary>
-        /// Speed of each page in the site map
+        /// Speed of each page in the site map.
         /// </summary>
-        /// <param name="site_Maps">Sitemap list</param>
-        public static void DetermineSpeed(ref List<Site_Map> site_Maps)
+        /// <param name="site_Maps">Sitemap list. </param>
+        internal static void DetermineSpeed(ref List<Site_Map> site_Maps)
         {
             if (site_Maps != null)
             {
-                WebClient _wc;
-                Stopwatch _watch;
-
                 foreach (var item in site_Maps)
                 {
                     for (int k = 0; k < 2; k++)
-                    {
-                        _wc = new WebClient();
-                        _watch = new Stopwatch();
-                        
+                    {                        
                         _watch.Start();
                         byte[] data = _wc.DownloadData(item.UrlSite.ToString());
                         _watch.Stop();
@@ -33,27 +35,20 @@ namespace Test_Sitemap.Models
                         {
                             item.MaxSpeed = _watch.ElapsedMilliseconds;
 
-                            if (item.MinSpeed == 0)
-                            {
-                                item.MinSpeed = item.MaxSpeed;
-                            }
+                            if (item.MinSpeed == 0) item.MinSpeed = item.MaxSpeed;
                         }
-                        else if (item.MinSpeed > _watch.ElapsedMilliseconds)
-                        {
-                            item.MinSpeed = _watch.ElapsedMilliseconds;
-                        }
-
+                        else if (item.MinSpeed > _watch.ElapsedMilliseconds) item.MinSpeed = _watch.ElapsedMilliseconds;
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Сheck for page request
+        /// Сheck for page request.
         /// </summary>
-        /// <param name="url">URL for request</param>
+        /// <param name="url">URL for request. </param>
         /// <returns></returns>
-        public static bool URLExists(string url)
+        internal static bool URLExists(string url)
         {
             bool result = false;
 
@@ -69,13 +64,7 @@ namespace Test_Sitemap.Models
                 result = true;
             }
             catch (WebException){}
-            finally
-            {
-                if (response != null)
-                {
-                    response.Close();
-                }
-            }
+            finally { if (response != null) response.Close(); }
 
             return result;
         }

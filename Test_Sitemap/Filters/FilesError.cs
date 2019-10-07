@@ -3,8 +3,11 @@ using System.Web.Mvc;
 
 namespace Test_Sitemap.Filters
 {
-    public class FilesError : FilterAttribute, IExceptionFilter
+    internal sealed class FilesError : FilterAttribute, IExceptionFilter
     {
+        /// <summary>
+        /// Extensible method of ExceptionContext
+        /// </summary>
         public void OnException(ExceptionContext exceptionContext)
         {
             if (!exceptionContext.ExceptionHandled && exceptionContext.Exception is Exception)
