@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Net;
 using Ninject;
+using Test_Sitemap.Filters;
 
 namespace Test_Sitemap.Controllers
 {   
@@ -37,6 +38,7 @@ namespace Test_Sitemap.Controllers
         /// <param name="url"> URL for generete site map</param>
         /// <returns>Show site map details</returns>
         [HttpPost]
+        [FilesError]
         public async Task<ActionResult> Index(string url)
         {
             if (string.IsNullOrEmpty(url)) return View();
@@ -64,6 +66,7 @@ namespace Test_Sitemap.Controllers
         /// <param name="url"> URL for search site map</param>
         /// <returns>Returns  all sitemap</returns>
         [HttpGet]
+        [FilesError]
         public async Task<ActionResult> WebsiteDetails(string url)
         {
 
@@ -80,11 +83,17 @@ namespace Test_Sitemap.Controllers
             return View(await siteMapRepository.GetSitesMap(url).ConfigureAwait(false));
         }
 
+        public ActionResult Error()
+        {
+            return View();
+        }
+
         /// <summary>
         /// All sites after generation
         /// </summary>
         /// <returns>Previously processed requests</returns>
         [HttpGet]
+        [FilesError]
         public async Task<ActionResult> AllSites()
         {
             return View(await siteMapRepository.GetAllSitesMap().ConfigureAwait(false));
