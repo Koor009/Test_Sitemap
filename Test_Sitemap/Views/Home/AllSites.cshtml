@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Test_Sitemap.Models.WebSite>
+
+<h2 class="text-center">Search History</h2>
+<div class="container">
+    <table class="table table-info table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>URL</th>
+                <th>Open</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var page in Model)
+            {
+                <tr>
+                    <td>@page.Name</td>
+                    <td>@Html.ActionLink("Details", "WebsiteDetails", "Home", new { url = page.Name }, new { @class="btn btn-primary"})</td>
+                   
+                </tr>
+            }
+        </tbody>
+        
+    </table>
+</div>
