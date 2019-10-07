@@ -6,7 +6,7 @@ namespace Test_Sitemap.Filters
     internal sealed class FilesError : FilterAttribute, IExceptionFilter
     {
         /// <summary>
-        /// Extensible method of ExceptionContext
+        /// Extensible method of ExceptionContext.
         /// </summary>
         public void OnException(ExceptionContext exceptionContext)
         {
