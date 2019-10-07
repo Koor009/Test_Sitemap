@@ -45,14 +45,14 @@ namespace Test_Sitemap.Controllers
 
             _wc = new WebClient();
             _watch = new Stopwatch();
-            var _url = Generate.ResponseUriSite(url).ToString();
+            var _url = GeneratorSitemap.ResponseUriSite(url).ToString();
             _watch.Start();
 
             byte[] data = _wc.DownloadData(_url);
 
             _watch.Stop();
 
-            var res = await Task.Run(()=>Generate.CreateSiteMap(_url)).ConfigureAwait(false);
+            var res = await Task.Run(()=> GeneratorSitemap.CreateSiteMap(_url)).ConfigureAwait(false);
             
             await siteMapRepository.SaveSiteMapAsync(_url, res).ConfigureAwait(false);
 
@@ -72,7 +72,7 @@ namespace Test_Sitemap.Controllers
 
             _wc = new WebClient();
             _watch = new Stopwatch();
-            var _url = Generate.ResponseUriSite(url).ToString();
+            var _url = GeneratorSitemap.ResponseUriSite(url).ToString();
 
             _watch.Start();
             byte[] data = _wc.DownloadData(_url);

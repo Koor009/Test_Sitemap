@@ -151,7 +151,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Generate.cs" />
+    <Compile Include="Models\GeneratorSitemap.cs" />
     <Compile Include="Models\ISiteMapRepository.cs" />
     <Compile Include="Models\SiteContext.cs" />
     <Compile Include="Models\SiteMapRepository.cs" />

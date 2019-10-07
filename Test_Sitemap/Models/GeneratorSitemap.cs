@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Test_Sitemap.Models
 {
-    public sealed class Generate
+    public sealed class GeneratorSitemap
     {
         /// <summary>
         /// Get the whole page
@@ -34,7 +34,7 @@ namespace Test_Sitemap.Models
         /// <returns>Sitemap list</returns>
         internal async static Task<List<Site_Map>> CreateSiteMap(string url)
         {
-            List<Site_Map> siteMap = new List<Site_Map>();
+            var siteMap = new List<Site_Map>();
             Url _url = null;
 
             _url = ResponseUriSite(url);
