@@ -9,7 +9,7 @@ namespace Test_Sitemap.Models
         private static WebClient _wc;
         private static Stopwatch _watch;
 
-        internal SpeedURL()
+        static SpeedURL()
         {
             _wc = new WebClient();
             _watch = new Stopwatch();
@@ -26,11 +26,12 @@ namespace Test_Sitemap.Models
                 foreach (var item in site_Maps)
                 {
                     for (int k = 0; k < 2; k++)
-                    {                        
+                    {
+                        _watch.Reset();
                         _watch.Start();
                         byte[] data = _wc.DownloadData(item.UrlSite.ToString());
                         _watch.Stop();
-
+                        
                         if (item.MaxSpeed < _watch.ElapsedMilliseconds)
                         {
                             item.MaxSpeed = _watch.ElapsedMilliseconds;
