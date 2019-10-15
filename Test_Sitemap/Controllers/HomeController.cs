@@ -2,7 +2,6 @@
 using Test_Sitemap.Models;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Net;
 using Ninject;
 using Test_Sitemap.Filters;
 
@@ -11,12 +10,10 @@ namespace Test_Sitemap.Controllers
     public sealed class HomeController : Controller
     {
         ISiteMapRepository siteMapRepository;
-        private WebClient _wc;
         private Stopwatch _watch;
         
         public HomeController()
         {
-            _wc = new WebClient();
             _watch = new Stopwatch();
 
             IKernel ninjectKernel = new StandardKernel();
@@ -48,9 +45,7 @@ namespace Test_Sitemap.Controllers
 
             var _url = GeneratorSitemap.ResponseUriSite(url).ToString();
 
-            _watch.Start();
-            byte[] data = _wc.DownloadData(_url);
-            _watch.Stop();
+            _watch = SpeedURL.SiteTimeOut(_url);
 
             var res = await Task.Run(()=> GeneratorSitemap.CreateSiteMap(_url)).ConfigureAwait(false);
             
@@ -72,9 +67,7 @@ namespace Test_Sitemap.Controllers
         {
             var _url = GeneratorSitemap.ResponseUriSite(url).ToString();
 
-            _watch.Start();
-            byte[] data = _wc.DownloadData(_url);
-            _watch.Stop();
+            _watch = SpeedURL.SiteTimeOut(_url);
 
             ViewBag.Watch = _watch.ElapsedMilliseconds;
 
@@ -82,6 +75,11 @@ namespace Test_Sitemap.Controllers
         }
 
         public ActionResult Error()
+        {
+            return View();
+        }
+
+        public ActionResult Error403()
         {
             return View();
         }

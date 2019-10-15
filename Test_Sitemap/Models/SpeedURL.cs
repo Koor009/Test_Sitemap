@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 
@@ -27,11 +28,8 @@ namespace Test_Sitemap.Models
                 {
                     for (int k = 0; k < 2; k++)
                     {
-                        _watch.Reset();
-                        _watch.Start();
-                        byte[] data = _wc.DownloadData(item.UrlSite.ToString());
-                        _watch.Stop();
-                        
+                        _watch = SiteTimeOut(item.UrlSite.ToString());
+
                         if (item.MaxSpeed < _watch.ElapsedMilliseconds)
                         {
                             item.MaxSpeed = _watch.ElapsedMilliseconds;
@@ -51,23 +49,30 @@ namespace Test_Sitemap.Models
         /// <returns></returns>
         internal static bool URLExists(string url)
         {
-            bool result = false;
-
-            var webRequest = WebRequest.Create(url);
-            webRequest.Timeout = 1200; // miliseconds
-            webRequest.Method = "HEAD";
-
-            HttpWebResponse response = null;
-
             try
             {
-                response = (HttpWebResponse)webRequest.GetResponse();
-                result = true;
+                HttpWebRequest webRequest = WebRequest.CreateHttp(url);
+                webRequest.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36";
+                using (HttpWebResponse response = (HttpWebResponse)webRequest.GetResponse()) { return response.StatusCode == HttpStatusCode.OK; }
             }
-            catch (WebException){}
-            finally { if (response != null) response.Close(); }
+            catch (Exception) { return false; }
 
-            return result;
+        }
+
+        /// <summary>
+        /// Load a site and measure the loading time.
+        /// </summary>
+        /// <param name="url">URL page. </param>
+        /// <returns>Site load time. </returns>
+        internal static Stopwatch SiteTimeOut(string url)
+        {
+            _wc.Headers.Add("User-Agent: Other");
+
+            _watch.Reset();
+            _watch.Start();
+            byte[] data = _wc.DownloadData(url);
+            _watch.Stop();
+            return _watch;
         }
     }
 }

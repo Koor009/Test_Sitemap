@@ -49,23 +49,34 @@ namespace Test_Sitemap.Models
 
                 if (href != null)
                 {
+
                     if (href.StartsWith("http://") || href.StartsWith("https://") || href.StartsWith("www") || href.StartsWith("//"))
+                    {
                         if (!href.StartsWith("//"))
+                        {
                             if (SpeedURL.URLExists(href)) siteMap.Add(new Site_Map() { UrlSite = href });
                             else
                             {
                                 if (!siteMap.Contains(new Site_Map() { UrlSite = ResponseUriSite(href).ToString() }))
-                                    if (SpeedURL.URLExists(ResponseUriSite(href).ToString())) siteMap.Add(new Site_Map() { UrlSite = ResponseUriSite(href).ToString() });
-                            }
-                        else
-                        {
-                            if (!href.StartsWith(url.Replace("https://", "")) && href.StartsWith(url))
-                                if (SpeedURL.URLExists(href)) siteMap.Add(new Site_Map() { UrlSite = href });
-                                else
                                 {
-                                    if (SpeedURL.URLExists(url + href)) siteMap.Add(new Site_Map() { UrlSite = url + href });
+                                    if (SpeedURL.URLExists(ResponseUriSite(href).ToString())) siteMap.Add(new Site_Map() { UrlSite = ResponseUriSite(href).ToString() });
                                 }
+                            }
                         }
+                    }
+                    else
+                    {
+                        if (!href.StartsWith(url.Replace("https://", "")) && !href.StartsWith(url.Replace("http://", "")) && !href.StartsWith(url))
+                            if (SpeedURL.URLExists(href)) siteMap.Add(new Site_Map() { UrlSite = ResponseUriSite(href).ToString() });
+                            else
+                            {
+                                if (SpeedURL.URLExists(url + href)) siteMap.Add(new Site_Map() { UrlSite = ResponseUriSite(url + href).ToString() });
+                            }
+                        else if (href.StartsWith(url))
+                        {
+                            siteMap.Add(new Site_Map() { UrlSite = ResponseUriSite(href).ToString() });
+                        }
+                    }
                 }
             }
 
@@ -85,6 +96,7 @@ namespace Test_Sitemap.Models
             if (!(url.StartsWith("http") || url.StartsWith("https")))
             {
                 HttpWebRequest request = WebRequest.CreateHttp("http://" + url);
+                request.UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36";
 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse()) { return Url.Convert(response.ResponseUri); }
             }
